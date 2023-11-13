@@ -43,7 +43,7 @@ func (p *tomlParser) peek() *token {
 func (p *tomlParser) assume(typ tokenType) {
 	tok := p.getToken()
 	if tok == nil {
-		p.raiseError(tok, "was expecting token %s, but token stream is empty", tok)
+		panic("was expecting token, but token stream is empty")
 	}
 	if tok.typ != typ {
 		p.raiseError(tok, "was expecting token %s, but got %s instead", typ, tok)
@@ -273,7 +273,10 @@ func cleanupNumberToken(value string) string {
 
 func (p *tomlParser) parseRvalue() interface{} {
 	tok := p.getToken()
-	if tok == nil || tok.typ == tokenEOF {
+	if tok == nil {
+		panic("getToken(): expecting a value")
+	}
+	if tok.typ == tokenEOF {
 		p.raiseError(tok, "expecting a value")
 	}
 
@@ -406,7 +409,10 @@ func (p *tomlParser) parseInlineTable() *Tree {
 Loop:
 	for {
 		follow := p.peek()
-		if follow == nil || follow.typ == tokenEOF {
+		if follow == nil {
+			panic("peek(): expected a value")
+		}
+		if follow.typ == tokenEOF {
 			p.raiseError(follow, "unterminated inline table")
 		}
 		switch follow.typ {
