@@ -38,5 +38,8 @@ var invalidAsciiTable = [256]bool{
 }
 
 func InvalidAscii(b byte) bool {
+	if b > 255 {
+		return true
+	}
 	return invalidAsciiTable[b]
 }
